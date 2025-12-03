@@ -224,6 +224,11 @@ const forgotPassword = async (req, res) => {
   await user.save();
 
   // TODO — SEND EMAIL OTP HERE
+   await sendEmail(
+  email,
+  "Welcome to LimoTaxi – Verify Your Email",
+  forgotPasswordTemplate(otp)
+);
 
   res.status(200).json({
     status: 200,
@@ -261,9 +266,9 @@ const resetPassword = async (req, res) => {
     });
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);
-
+  user.oldpassword = user.password;
   user.password = hashedPassword;
-  user.oldpassword = hashedPassword;
+  
   user.otp = null;
   await user.save();
 
